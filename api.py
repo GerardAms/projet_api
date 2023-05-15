@@ -52,20 +52,20 @@ with app.app_context():
     db.create_all()
     print('Database created')
 
-# Endpoint pour consulter tous les articles
+
 @app.route('/articles', methods=['GET'])
 def get_articles():
     all_articles = Article.query.all()
     result = articles_schema.dump(all_articles)
     return jsonify(result)
 
-# Endpoint pour consulter un article par son id
+
 @app.route('/articles/<id>', methods=['GET'])
 def get_article(id):
     article = Article.query.get(id)
     return article_schema.jsonify(article)
 
-# Endpoint pour ajouter un article
+
 @app.route('/articles', methods=['POST'])
 def add_article():
     nom = request.json['nom']
