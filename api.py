@@ -13,37 +13,37 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + \
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
-# Définition de la classe Article
+
 class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nom = db.Column(db.String(100), unique=True, nullable=False)
-    desc = db.Column(db.String(200), nullable=False)
+    descri = db.Column(db.String(200), nullable=False)
     prix = db.Column(db.Float, nullable=False)
     quantite = db.Column(db.Integer, nullable=False)
     categorie_id = db.Column(db.Integer, db.ForeignKey('categorie.id'), nullable=False)
 
-    def __init__(self, nom, desc, prix, quantite, categorie_id):
+    def __init__(self, nom, descri, prix, quantite, categorie_id):
         self.nom = nom
-        self.desc = desc
+        self.descri = descri
         self.prix = prix
         self.quantite = quantite
         self.categorie_id = categorie_id
 
-# Définition de la classe Catégorie
+
 class Categorie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nom = db.Column(db.String(100), unique=True, nullable=False)
-    desc = db.Column(db.String(200), nullable=False)
+    descri = db.Column(db.String(200), nullable=False)
     articles = db.relationship('Article', backref='categorie', lazy=True)
 
-    def __init__(self, nom, desc):
+    def __init__(self, nom, descri):
         self.nom = nom
-        self.desc = desc
+        self.descri = descri
 
-# Définition du schéma de sérialisation pour Article
+
 class ArticleSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'nom', 'desc', 'prix', 'quantite', 'categorie_id')
+        fields = ('id', 'nom', 'descri', 'prix', 'quantite', 'categorie_id')
 
 article_schema = ArticleSchema()
 articles_schema = ArticleSchema(many=True)
@@ -69,12 +69,12 @@ def get_article(id):
 @app.route('/articles', methods=['POST'])
 def add_article():
     nom = request.json['nom']
-    desc = request.json['desc']
+    descri = request.json['descri']
     prix = request.json['prix']
     quantite = request.json['quantite']
     categorie_id = request.json['categorie_id']
 
-    new_article = Article(nom, desc, prix, quantite, categorie_id)
+    new_article = Article(nom, descri, prix, quantite, categorie_id)
     db.session.add(new_article)
     try:
         db.session.commit()
@@ -88,13 +88,13 @@ def update_article(id):
     article = Article.query.get(id)
     if article:
         nom = request.json.get('nom', article.nom)
-        desc = request.json.get('desc', article.desc)
+        descri = request.json.get('descri', article.desc)
         prix = request.json.get('prix', article.prix)
         quantite = request.json.get('quantite', article.quantite)
         categorie_id = request.json.get('categorie_id', article.categorie_id)
 
         article.nom = nom
-        article.desc = desc
+        article.desc = descri
         article.prix = prix
         article.quantite = quantite
         article.categorie_id = categorie_id
@@ -129,7 +129,7 @@ def search_articles():
             data = {}
             data['id'] = article.id
             data['nom'] = article.nom
-            data['desc'] = article.desc
+            data['descri'] = article.descri
             data['prix'] = article.prix
             data['quantite'] = article.quantite
             data['categorie'] = article.categorie.nom
